@@ -79,7 +79,7 @@ function App() {
 
   return (
     <div className="App">
-      
+        <button onClick={download}>Download</button>
         <canvas ref = {canvasRef} style={{border: "1px solid black"}} width="470" height="600"></canvas>
     </div>
   );
