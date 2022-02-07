@@ -46,6 +46,7 @@ function App() {
     const img = new Image()
     img.src = shirt
     NFT.src = nft
+    NFT.crossOrigin = "Anonymous"
 
 
     img.onload = function(){
