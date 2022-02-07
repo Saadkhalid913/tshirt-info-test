@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 
 import { getDatabase,ref,set,push,get } from "firebase/database"
+import  { ref as storageRef, uploadBytes, getStorage, getDownloadURL } from "firebase/storage"
 
 const firebaseConfig = {
     apiKey: 'AIzaSyBnIiqkbhcklKwZQe683RrZwNnIRzLLM5Q',
@@ -14,10 +15,27 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 const db = getDatabase(app)
+const storage = getStorage(app)
 
-export async function addImage(imageID, base64String) {
-    const dataRef = ref(db, `/nft_previews/${imageID}`)
-    set(dataRef, base64String).then(r => console.log(r))
+
+export async function getImageFromStorage(imageID) {
+    const dataRef = storageRef(storage, `/nft_previews/${imageID}`)
+try {
+    const result = await getDownloadURL(dataRef)
+    return result
+}    
+catch(err) {
+    return null
+}
+}
+export async function addImage(imageID, base64) {
+    const dataRef = storageRef(storage, `/nft_previews/${imageID}`)
+    const data = await fetch(base64)
+    const existing = await getImageFromStorage(imageID)
+    if (existing) return 
+    const file = await data.blob()
+    uploadBytes(dataRef, file).then(r => console.log(r))
+    console.log("Done Uploading new shirt")
 }
 
 export async function getImageFromFirebase(imageID) {

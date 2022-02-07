@@ -11,42 +11,21 @@ function App() {
     const str = window.location.search;
 
     const number = str.replace('?', '');
-    console.log(number);
-    const [state, setState] = useState();
     const [nft, setNFT] = useState("")
 
 
     async function getimage(number){
-
       const res = await fetch(`https://api.opensea.io/api/v1/asset/0x26badf693f2b103b021c670c852262b379bbbe8a/${number}/?format=json`)
       const data = await res.json()
-      console.log(data.image_url);
       const image = data.image_url
-      setState(image)
-
-
       setNFT(image)
-    if (canvasRef.current) {
-      const ctx = canvasRef.current.getContext("2d")
-      ctx.clearRect(0,0,500,600)
-    }
-
-      console.log(state + "test");
-      setter()
   }
 
-  useEffect(() => {
-    getimage(number)
-  }, [getimage, number])
-
-
-
-
-   
+  useEffect(() => {getimage(number)} ,[getimage, number])
 
     const NFT = new Image()    
-
     const img = new Image()
+    
     img.src = shirt
     NFT.src = nft
     NFT.crossOrigin = "Anonymous"
@@ -69,18 +48,17 @@ function App() {
       let imageData = canvasRef.current.toDataURL("image/png")
       var link = document.createElement('a');
       link.download = "my-image.png";
-      addImage(number, btoa(imageData.toString()))
+      addImage(number, imageData)
 
       link.href = imageData;
       link.click();
   }
-  const setter = (e) => {  
-    setNFT(state)
-    if (canvasRef.current) {
-      const ctx = canvasRef.current.getContext("2d")
-      ctx.clearRect(0,0,500,600)
-    }
-  }
+
+  // canvasRef.current.onload = () => {
+  //   const ctx = canvasRef.current.getContext("2d")
+  //   if (NFT) ctx.drawImage(NFT,185,200, 125,125); // Or at whatever offset you like
+  //   if (img) ctx.drawImage(img,185,200, 125,125); // Or at whatever offset you like
+  // }
 
   return (
     <div className="App">
