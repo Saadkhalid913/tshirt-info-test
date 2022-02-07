@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import { useEffect, useRef, useState } from "react"
+import { addImage,getImageFromFirebase } from './firebase';
 import shirt from "./shirt.jpeg"
 const queryString = require('query-string');
 function App() {
@@ -12,9 +13,11 @@ function App() {
     const number = str.replace('?', '');
     console.log(number);
     const [state, setState] = useState();
+    const [nft, setNFT] = useState("")
 
 
     async function getimage(number){
+
       const res = await fetch(`https://api.opensea.io/api/v1/asset/0x26badf693f2b103b021c670c852262b379bbbe8a/${number}/?format=json`)
       const data = await res.json()
       console.log(data.image_url);
@@ -34,12 +37,12 @@ function App() {
 
   useEffect(() => {
     getimage(number)
-  }, [])
+  }, [getimage, number])
 
 
 
 
-    const [nft, setNFT] = useState("")
+   
 
     const NFT = new Image()    
 
@@ -47,7 +50,6 @@ function App() {
     img.src = shirt
     NFT.src = nft
     NFT.crossOrigin = "Anonymous"
-
 
     img.onload = function(){
         if (canvasRef.current) {
@@ -64,10 +66,12 @@ function App() {
     }
 
     const download = () => {
-      const image = canvasRef.current.toDataURL("image/png")
+      let imageData = canvasRef.current.toDataURL("image/png")
       var link = document.createElement('a');
       link.download = "my-image.png";
-      link.href = image;
+      addImage(number, btoa(imageData.toString()))
+
+      link.href = imageData;
       link.click();
   }
   const setter = (e) => {  
